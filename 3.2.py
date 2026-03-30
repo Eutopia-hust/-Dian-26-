@@ -113,17 +113,15 @@ class GDNBlock(nn.Module):
         return x + residual
 
 
-# ==================== 分类器（修复后的版本） ====================
+# ====================分类器===================
 
 class FashionGDNClassifier(nn.Module):
     def __init__(self, image_size=28, d_model=128, num_blocks=4, num_classes=10, dropout=0.1):
         super().__init__()
         
-        # ✅ 修复1：序列长度 = 28*28 = 784
-        self.seq_len = image_size * image_size  # 不是 num_blocks！
+        self.seq_len = image_size * image_size 
         
-        # ✅ 修复2：输入是1维（灰度值），投影到d_model维
-        self.input_proj = nn.Linear(1, d_model)  # 不是 Linear(d_model, d_model)！
+        self.input_proj = nn.Linear(1, d_model)  
         
         # 位置编码
         self.pos_embed = nn.Parameter(torch.randn(1, self.seq_len, d_model) * 0.02)
@@ -137,9 +135,7 @@ class FashionGDNClassifier(nn.Module):
         
         self.norm = nn.LayerNorm(d_model)
         
-        # ✅ 修复3：全局平均池化
-        self.global_pool = nn.AdaptiveAvgPool1d(1)  # 不是 AvgPool1d(d_model)！
-        
+        self.global_pool = nn.AdaptiveAvgPool1d(1)  
         self.head = nn.Linear(d_model, num_classes)
         
     def forward(self, x):
@@ -283,6 +279,9 @@ def main():
     
     print(f'\nTraining complete!')
 
+
+if __name__ == '__main__':
+    main()
 
 if __name__ == '__main__':
     main()
