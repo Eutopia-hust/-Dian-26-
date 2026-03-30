@@ -41,7 +41,6 @@ class IrisModel(nn.Module):
     def forward(self, x):
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
-        x = manual_softmax(x)  # 使用手动实现的Softmax
         return x
 
 model = IrisModel()
