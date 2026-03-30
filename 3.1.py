@@ -4,29 +4,27 @@ import torch.nn.functional as F
 
 class GatedDeltaNet(nn.Module):
     """
-    Gated DeltaNet 的核心实现（循环版本）
+    Gated DeltaNet 的核心实现
     
     参数：
-        d_model: 输入输出的维度（比如 128）
-        d_k: 键/查询的维度（通常等于 d_model）
-        d_v: 值的维度（通常等于 d_model）
-        beta1: 遗忘强度，默认 1.0（完全擦除）
+        d_model: 输入输出的维度
+        d_k: 键/查询的维度
+        d_v: 值的维度
+        beta1: 遗忘强度，默认 1.0
         beta2: 学习率/写入强度，默认 1.0
     """
     def __init__(self, d_model, d_k=None, d_v=None, beta1=1.0, beta2=1.0):
         super().__init__()
         
-        # 如果没指定，就让 d_k 和 d_v 等于 d_model
         self.d_k = d_k if d_k is not None else d_model
         self.d_v = d_v if d_v is not None else d_model
         self.d_model = d_model
         
         # 可学习的参数
-        self.beta1 = beta1  # 可以是固定值，也可以是 nn.Parameter
+        self.beta1 = beta1  
         self.beta2 = beta2
         
         # 三个线性层：生成 q, k, v
-        # 为什么用 Linear？因为我们要把输入 x 投影到不同的空间
         self.W_q = nn.Linear(d_model, self.d_k, bias=False)
         self.W_k = nn.Linear(d_model, self.d_k, bias=False)
         self.W_v = nn.Linear(d_model, self.d_v, bias=False)
@@ -49,7 +47,6 @@ class GatedDeltaNet(nn.Module):
         
         # 步骤2：初始化隐状态 S
         # S 的形状: (batch_size, d_v, d_k)
-        # 为什么是 d_v x d_k？因为 S 的每一列对应一个"标签方向"
         S = torch.zeros(batch_size, self.d_v, self.d_k, device=x.device)
         
         # 步骤3：存储每个时间步的输出
