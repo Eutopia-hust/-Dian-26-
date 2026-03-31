@@ -104,3 +104,8 @@ class GroupedQueryAttention(nn.Module):
         output = self.W_o(output)
         
         return output, new_key_values
+    # 测试：实例化 + 前向传播
+model = GroupedQueryAttention(hidden_dim=8, num_heads=4, num_kv_heads=2)
+x = torch.randn(2, 3, 8)  # 随机输入
+output, kv = model(x)
+print("输出形状:", output.shape)
