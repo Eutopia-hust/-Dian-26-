@@ -106,3 +106,12 @@ class GatedDeltaNet(nn.Module):
         outputs = self.W_o(outputs)  # (B, L, d_model)
         
         return outputs
+    # 测试代码
+if __name__ == "__main__":
+    # 初始化模型
+    model = GatedDeltaNet(d_model=16)
+    # 构造输入：batch=2, 序列长度=5, 维度=16
+    x = torch.randn(2, 5, 16)
+    # 前向传播
+    out = model(x)
+    print("输出形状:", out.shape)
